@@ -1,95 +1,63 @@
 import './App.css';
-import {useState, useRef} from 'react';
-import { DiagramComponent, NodeModel, DiagramTools } from "@syncfusion/ej2-react-diagrams";
-
+import {useState, useRef, useEffect} from 'react';
+import { DiagramComponent, DiagramTools, NodeModel} from "@syncfusion/ej2-react-diagrams";
+import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 function App() {
-  const diagramRef = useRef<DiagramComponent>(null);
-  const [nodeCollection, setNodeCollection] = useState<NodeModel[]>([
+  const diagramObject = useRef<DiagramComponent>(null);
+  let diagramInstance = diagramObject.current;
+  const [nodes, setNodes] = useState<NodeModel[]>([
     {
-      id : "custom_Node",
-      width : 100,
-      height: 100,
-      offsetX : 300, 
-      offsetY: 100,
-      style : {
-        fill : "#59A7FF",
-        strokeColor: "black",
-        strokeWidth : 2
-      }
-    },
-  ])
-  const addNode = () =>{
-    const newNode : NodeModel= {
-      id:"new_Node",
-      width: 100,
-      height: 100,
       offsetX:300,
-      offsetY:400,
-      style :{
-        fill : "#59A7FF",
-        strokeWidth:2, strokeColor:"black"
-      }
+      offsetY:250,
+      width:200,
+      height:100,
+      annotations:[{content:"Flow"}, {content:"Terminator", offset:{y:0.6}}],
+      style : {fill:'lightblue', strokeColor:'white'},
+      shape:{type : "Flow", shape:"Terminator"},
     }
-    setNodeCollection([...nodeCollection,newNode]);
-  }
-  const toggleDrawingMode = () =>{
-    if(diagramRef.current){
-      if(diagramRef.current.tool === DiagramTools.ContinuousDraw){
-        diagramRef.current.tool = DiagramTools.Default;
-      }
-      else{
-        diagramRef.current.tool = DiagramTools.ContinuousDraw;
-        diagramRef.current.drawingObject = {
-          height:100,
-          width:100,
-          shape :{
-            type : "Basic",
-            shape:"Rectangle"
-          },
-          style :{fill: "#59A7FF", strokeColor:"black", strokeWidth:2},
-          annotations :[{content:"Drawn Nodes"}]
-        }
-      }
+  ])
+  useEffect(()=>{
+    diagramInstance = diagramObject.current;
+    diagramInstance?.add(nodes[0]);
+  })
+  const drawNode =()=>{
+    if(diagramInstance){
+      diagramInstance.tool = DiagramTools.ContinuousDraw;
+      diagramInstance.drawingObject = {shape : {type : "Basic", shape:"Rectangle"}}
     }
   }
   const editNode = () =>{
-    if(nodeCollection.length  >0){
-      const updatedNodes = nodeCollection.map((node, index)=>{
-        if(index === 0){
-          return{
+    if(nodes.length > 0){
+      const updateNodes = nodes.map((node, index)=>{
+        if(index === 0 ){
+          return {
             ...node,
-            style :{
-              strokeColor :"yellow",
-              fill :"#f2f2f2"
-            },
-            annotations : [{content: "Edited Node"}]
+            width:400, height:200,
+            style : {...node.style,
+              fill:'orange', strokeColor:'blue'
+            }
           }
-          
         }
         return node;
       })
-      setNodeCollection(updatedNodes);
+      setNodes(updateNodes);
     }
   }
-  const removeNode = ()=>{
-    if(nodeCollection.length >0){
-      diagramRef.current?.remove(nodeCollection[0]);
-      setNodeCollection(nodeCollection.slice(0, -1))
-    }
+  const removeNode = () =>{
+    diagramObject.current?.remove(nodes[0]);
   }
   return (
     <div style={{ margin: "0px 0px 0px 20px" }}>
-    <div style = {{display:"flex", gap:10, padding:20}}>
-      <button onClick={addNode}>Add Node</button>
-      <button onClick={toggleDrawingMode}>Toggle Drawing Mode</button>
-      <button onClick = {editNode}>Edit Node</button>
-      <button onClick = {removeNode}>Remove Node</button>
-    </div>
+      <div className='container'>
+        <ButtonComponent cssClass='button' onClick={drawNode}>Draw Node</ButtonComponent>
+        <ButtonComponent cssClass='button' onClick={editNode}>Edit Node</ButtonComponent>
+        <ButtonComponent cssClass='button' onClick={removeNode}>Remove Node</ButtonComponent>
+      </div>
       <DiagramComponent
-        ref = {diagramRef}
         height={"620px"}
         width={"100%"}
-        nodes = {nodeCollection}
+        //nodes = {nodes}
+        ref = {diagramObject}
       />
     </div>
   );
