@@ -1,5 +1,5 @@
 # how-to-create-and-customize-nodes-in-the-react-diagram-component
-A quick-start React app that shows how to create and customize nodes in the [React Diagram](https://www.syncfusion.com/react-components/react-diagram) Component. It explains how to add, edit, draw and remove nodes during run time.
+A quick-start React app that shows how to create and customize nodes in the [React Diagram](https://www.syncfusion.com/diagram-sdk/react-diagram) Component. It explains how to add, edit, draw and remove nodes during run time.
 
 Refer to the following documentation to learn about the React Diagram Component: 
 [https://ej2.syncfusion.com/react/documentation/diagram/getting-started#dependencies](https://ej2.syncfusion.com/react/documentation/diagram/nodes)
